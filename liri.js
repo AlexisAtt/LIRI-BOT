@@ -1,15 +1,16 @@
     var dotenv = require("dotenv").config();
     var keys = require("./keys.js");
-   // var spotify = new Spotify(keys.spotify);
+    //var Spotify = require("node-spotify-api");
+    //var spotify = new Spotify(keys.spotify);
     var axios = require("axios");
     
     var fs = require("fs");
     var moment = require("moment");
+    var userCase = process.argv[2];
+    var userInput = process.argv[3];
 
- 
-
-
-switch (process.argv[2]){
+function userCommand(userCase, userInput) {
+switch (userCase){
     case "concert-this":
         concertThis();
         break;
@@ -24,21 +25,25 @@ switch (process.argv[2]){
          doWhatItSays();
          break;
 }
+}
+userCommand(userCase, userInput);
 
 function concertThis() {
-
-    var artist = process.argv[3];
-
-    var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
-    axios
-    .get(queryUrl)
+    axios.get("https://rest.bandsintown.com/artists/" + userInput + "/events?app_id=codingbootcamp")
     .then(function(response) {
-            console.log("" +response.data.Year)
+            
+            //console.log(response.data[0]);
+            console.log("------Info------")
+            console.log("Venue: " + response.data[0].venue.name);
+            console.log("Location: " + response.data[0].venue.city + "," + response.data[0].venue.region);
+            console.log("Date: " + moment(response.data[0].datetime).format("MM/DD/YYYY"));
+            console.log("----------------")
         })
-        .catch(function(error){
+        .catch((error) => {
             if (error.response) {
-                console.log("----Data-----");
                 console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
             } else if (error.request) {
                 console.log(error.request);
             } else {
@@ -48,3 +53,68 @@ function concertThis() {
         });
 
 }
+
+function movieThis(){
+    axios.get("http://www.omdbapi.com/?t=" + userInput + "&y=&plot=short&apikey=trilogy").then(function(response){
+        console.log("------Info------");
+        console.log("Title: " + response.data.Title);
+        console.log("Year: " + response.data.Year);
+        console.log("IMDB Rating: " + response.data.Ratings[0].Value);
+        console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
+        console.log("Country: " + response.data.Country);
+        console.log("Language: " + response.data.Language);
+        console.log("Plot summary: " + response.data.Plot);
+        console.log("Cast: " + response.data.Actors);
+        console.log("----------------");
+    });
+};
+
+/*
+function spotifySong() {
+    if (userInput === "") {
+        spotify.search({ type: "track", query: "Africa"},
+        function(error,data) {
+            if (error) {
+                return console.log(error);
+            }
+            for (var i=0; i<data.tracks.items.length; i++) {
+                console.log("------Info------");
+                console.log("Artist: " + data.tacks.items[i].album.artists[0].name);
+                console.log("Song Prieview: " + data.tracks.items[i].preview_url);
+                console.log("Album: " + data.tracks.items[i].album.name);
+                console.log("----------------");
+            }
+        }
+        );
+    }
+else{
+    spotify.search({
+        type: "track", query: userInput
+    }, function(error, data){
+        if(error) {
+            return console.log(error);
+        }
+        for (var i=0; i<data.tracks.items.length; i++) {
+            console.log("------Info------");
+            console.log("Artist: " + data.tacks.items[i].album.artists[0].name);
+            console.log("Song Prieview: " + data.tracks.items[i].preview_url);
+            console.log("Album: " + data.tracks.items[i].album.name);
+            console.log("----------------");
+
+        }
+    });
+}
+}
+*/
+
+
+var text = userCase + " " + userInput + "\n";
+
+fs.appendFile("random.txt", text, function(err){
+    if (err) {
+        console.log(err);
+    }
+    else{
+        console.log("New Entry Added");
+    }
+});
