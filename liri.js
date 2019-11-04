@@ -1,7 +1,8 @@
     var dotenv = require("dotenv").config();
     var keys = require("./keys.js");
-    //var Spotify = require("node-spotify-api");
-    //var spotify = new Spotify(keys.spotify);
+    
+    var Spotify = require("node-spotify-api");
+    var spotify = new Spotify(keys.spotify);
     var axios = require("axios");
     
     var fs = require("fs");
@@ -69,7 +70,7 @@ function movieThis(){
     });
 };
 
-/*
+
 function spotifySong() {
     if (userInput === "") {
         spotify.search({ type: "track", query: "Africa"},
@@ -96,7 +97,7 @@ else{
         }
         for (var i=0; i<data.tracks.items.length; i++) {
             console.log("------Info------");
-            console.log("Artist: " + data.tacks.items[i].album.artists[0].name);
+            console.log("Artist: " + data.tracks.items[i].album.artists[0].name);
             console.log("Song Prieview: " + data.tracks.items[i].preview_url);
             console.log("Album: " + data.tracks.items[i].album.name);
             console.log("----------------");
@@ -105,14 +106,14 @@ else{
     });
 }
 }
-*/
+
 
 
 var text = userCase + " " + userInput + "\n";
 
-fs.appendFile("random.txt", text, function(err){
-    if (err) {
-        console.log(err);
+fs.appendFile("random.txt", text, function(error){
+    if (error) {
+        console.log(error);
     }
     else{
         console.log("New Entry Added");
