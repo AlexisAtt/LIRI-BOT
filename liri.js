@@ -107,6 +107,22 @@ else{
 }
 }
 
+function doWhatItSays(){
+    fs.readFile("random.txt", "utf8", (error, data) => {
+        if (error) {
+            console.log("err: ", error);
+        }
+        var array = data.split(",");
+        if (array[0] === "concert-this") {
+            concertThis(array[1]);
+        }
+        else if (array[0] === "spotify-this-song") {
+            spotifyThis(array[1]);
+        } else {
+            movieThis(array[1]);
+        }
+    });
+}
 
 
 var text = userCase + " " + userInput + "\n";
